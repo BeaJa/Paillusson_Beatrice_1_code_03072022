@@ -9,6 +9,7 @@ exports.createSauce = (req, res, next) => {
       req.file.filename
     }`,
   });
+  console.log(sauce);
   sauce.likes = 0;
   sauce.dislikes = 0;
   sauce

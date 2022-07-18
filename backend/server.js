@@ -16,15 +16,19 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
+app.get('/api', function(req, res){
+  res.send("home page");
+  // res.sendFile(__dirname+'/bin/index.html'); // change the path to your index.html
+});
+
 //gestion des erreurs
-const errorHandler = (error) => {
+function errorHandler(error) {
   if (error.syscall !== "listen") {
     throw error;
   }
   const address = server.address();
   console.log(address);
-  const bind =
-    typeof address === "string" ? "pipe " + address : "port: " + port;
+  const bind = typeof address === "string" ? "pipe " + address : "port: " + port;
   switch (error.code) {
     case "EACCES":
       console.error(bind + " requires elevated privileges.");
