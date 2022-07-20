@@ -1,10 +1,17 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+// const { validate } = require("../Schemas/user");
 const User = require("../Schemas/user");
 
 
 exports.signup = (req, res, next) => {
-
+  function validate(user) {
+    var schema = {
+        email: Joi.string().min(3).required().email(),
+        password: Joi.string().min(3).required()
+    }
+    return Joi.validate(user, schema)
+}
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
