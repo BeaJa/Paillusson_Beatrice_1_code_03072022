@@ -16,11 +16,6 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-app.get('/api', function(req, res){
-  res.send("home page");
-  // res.sendFile(__dirname+'/bin/index.html'); // change the path to your index.html
-});
-
 //gestion des erreurs
 function errorHandler(error) {
   if (error.syscall !== "listen") {
