@@ -1,12 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const { validate } = require("../Schemas/user");
-const User = require("../Schemas/user");
+const userValid = require("../Schemas/user");
 
 
 exports.signup = (req, res, next) => {
-  function validate(user) {
-    var schema = {
+  function validUser(user) {
+    const schema = {
         email: Joi.string().min(3).required().email(),
         password: Joi.string().min(3).required()
     }
@@ -15,11 +14,11 @@ exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
-      const user = new User({
+      const user = new userValid({
         email: req.body.email,
         password: hash,
       });
-      User
+      user
         .save()
         .then(() => res.status(201).json({ message: "utilisateur crée !" }))
         .catch((error) => res.status(400).json({ error }));
@@ -28,7 +27,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  userValid.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
         return res.status(401).json({ error: "Utilisateur non trouvé !" });
