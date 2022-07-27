@@ -1,3 +1,4 @@
+// --- Importation
 const http = require("http");
 const app = require("./app");
 
@@ -38,13 +39,16 @@ const errorHandler = error => {
   }
 };
 
+// --- Création du serveur
 const server = http.createServer(app);
 
-server.on("error", errorHandler);
+// --- Ecoute du serveur
 server.on("listening", () => {
   const address = server.address();
+  // console.log(address);
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
 });
+server.on("error", errorHandler);
 
 server.listen(port);

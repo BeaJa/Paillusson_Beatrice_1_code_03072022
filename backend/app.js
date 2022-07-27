@@ -1,33 +1,30 @@
+// --- Importation
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const path = require("path");
 const dotenv = require("dotenv");
 
-const helmetCsp = require("helmet-csp");
+// --- Routes requises
 const saucesRoutes = require("./routes/sauces");
 const userRoutes = require("./routes/user");
-const path = require("path");
 
+// --- Appel du module
 const app = express();
 
+// --- Appel de l'environnement
 dotenv.config();
+
+app.use(
+  helmet({
+crossOriginResourcePolicy : { policy: "same-site"}
+  }));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-
-app.use(
-  helmetCsp({
-    useDefaults: true,
-    directives: {
-      defaultSrc: ["'self'", "default.example"],
-      scriptSrc: ["'self'", "js.example.com"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-    reportOnly: false,
-  })
-);
-
+  
+// --- Connexion MongoDB
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_Username}:${process.env.DB_Password}@atlascluster.dfhjt.mongodb.net/?retryWrites=true&w=majority`,
@@ -36,7 +33,7 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 //header d'accès global à l'API
 app.use((req, res, next) => {
@@ -52,9 +49,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Requete du chemin vers le fichier de stockage images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
+
+app.use("/api/sauces", saucesRoutes);
 
 module.exports = app;
