@@ -1,7 +1,6 @@
 // --- Importation
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -16,15 +15,17 @@ const app = express();
 // --- Appel de l'environnement
 dotenv.config();
 
+// --- Utilisation pour augmenter la sécurité de l'entête HTTP 
 app.use(
   helmet({
 crossOriginResourcePolicy : { policy: "same-site"}
   }));
 
 app.use(express.json());
+// --- analyseur de corps pour le formulaire de publication html
 app.use(express.urlencoded({extended: false}));
   
-// --- Connexion MongoDB
+// --- Connexion MongoDB - base de données
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_Username}:${process.env.DB_Password}@atlascluster.dfhjt.mongodb.net/?retryWrites=true&w=majority`,
@@ -33,9 +34,7 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
-// app.use(bodyParser.json());
-
-//header d'accès global à l'API
+//header de controle pour l'accès à l'API
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(

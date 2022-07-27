@@ -21,7 +21,7 @@ function validatePassword(password) {
     return (false)
 }
 
-// --- Inscription
+// --- Inscription avec vérification de la validité des emails et passwords enregistrés
 exports.signup = (req, res) => {
     if (!ValidateEmail(req.body.email)) {
     return res.status(400).json({message: 'email incorrect'});
@@ -29,6 +29,7 @@ exports.signup = (req, res) => {
   if (!validatePassword(req.body.password)) {
     return res.status(400).json({message: "password incorrect"})
   }
+  // --- Hachage et sauvegarde dans la base de données des entrées
   bcrypt
     .hash(req.body.password, 10)
     .then(hash => {
@@ -44,7 +45,7 @@ exports.signup = (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-// --- connexion
+// --- connexion pour un utilisateur déjà enregistré
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then(user => {
